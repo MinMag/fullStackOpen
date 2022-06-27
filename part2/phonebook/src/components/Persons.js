@@ -4,7 +4,6 @@ const Persons = (props) => {
 
     const persons = props.persons
     const search = props.search
-    console.log(persons)
 
     const filt = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
 
