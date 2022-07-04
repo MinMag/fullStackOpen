@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import SearchBar from './components/SearchBar'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import PersonService from './services/contacts'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    PersonService.getAll()
       .then(response => {
         setPersons(response.data)
       })
-  })  
+  }, [])  
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
@@ -29,12 +29,28 @@ const App = () => {
     if(JSON.stringify(persons).includes(JSON.stringify(newPerson.name))) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat(newPerson))
+      PersonService.create(newPerson)
+      .then((response) => {
+      setPersons(persons.concat(response.data))
       setNewName('')
       setNewNumber('')
+}
+     )
+          }
+
+
+  }
+
+  const removePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+
+    if(window.confirm(`Delete ${person.name}?`)) {
+      PersonService.remove(id)
+      .then(response => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+
     }
-
-
   }
 
   const handleNameChange = (event) => {
@@ -62,7 +78,7 @@ const App = () => {
       <h2>Numbers</h2>
       
 
-      <Persons persons={persons} search={search} />
+      <Persons persons={persons} search={search} removePerson={removePerson} />
     </div>
   )
 }

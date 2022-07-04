@@ -10,7 +10,9 @@ const Persons = (props) => {
     return (
         <div>
         {filt.map(person => (
-            <div key={person.name}>{person.name} {person.number}</div>
+            <div key={person.name}>
+                {person.name} {person.number} <button onClick={()=>props.removePerson(person.id)}>delete</button>
+                </div>
         ))}
         </div>
      
